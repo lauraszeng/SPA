@@ -1,0 +1,33 @@
+<!DOCTYPE html>
+<html lang="eng">
+    <head>
+        <title>Tic Tac Toe Javascript</title>
+        <style>
+            .square {
+                border: 5px solid;
+                background-color: bisque;
+                display: inline-block;
+                height: 150px;
+                width: 150px;
+                vertical-align: top;
+                text-align: center;
+                margin: 10px 10px 10px 10px;
+            }
+
+            .square:hover {
+                background-color: aqua;
+            }
+        </style>
+        <script>
+            const NUM_SQUARES = 9;
+            for (i=0; i<NUM_SQUARES; i++)
+            {
+            id = "sq"+i;
+            document.write( "<div class='square' id='" + id + "'></div>" );
+            }
+        </script>
+    </head>
+    <body>
+        <p>hi</p>
+    </body>
+</html>
