@@ -3,31 +3,106 @@
     <head>
         <title>Tic Tac Toe Javascript</title>
         <style>
+            
+            /* Title block CSS */
+            .title {
+                margin: 0;
+                position: absolute;
+                top: 5%;
+                left: 50%;
+                transform: translate(-50%, -50%);
+            }
+
+            /* Gameboard CSS */
+            .gameboard {
+                margin: 0%;
+                position: absolute;
+                top: 45%;
+                left: 50%;
+                transform: translate(-50%, -50%);
+            }
+            
+            /* TicTacToe board CSS */
+            .tictactoe {
+                display: grid;
+                grid-template-columns: 120px 120px 120px;
+            }
+            
+            /* Individual square CSS */
             .square {
                 border: 5px solid;
                 background-color: bisque;
                 display: inline-block;
-                height: 150px;
-                width: 150px;
+                height: 100px;
+                width: 100px;
                 vertical-align: top;
                 text-align: center;
-                margin: 10px 10px 10px 10px;
+                margin: 5px 5px 5px 5px;
             }
-
             .square:hover {
                 background-color: aqua;
             }
-        </style>
-        <script>
-            const NUM_SQUARES = 9;
-            for (i=0; i<NUM_SQUARES; i++)
-            {
-            id = "sq"+i;
-            document.write( "<div class='square' id='" + id + "'></div>" );
+
+            /* Turnbox CSS */
+            .turnbox {
+                border-style: groove;
             }
-        </script>
+            /* <h2> and <p> within turnbox CSS */
+            .turnbox h2,p {
+                text-align: center;
+            }
+
+            /* Winnerbox CSS */
+            .winnerbox {
+                border-style: groove;
+                border-color: crimson;
+            }
+
+        </style>
+
     </head>
+
     <body>
-        <p>hi</p>
+
+        <!-- Title Box -->
+        <div class="title">
+            <h1>Tic Tac Toe</h1>
+        </div>
+
+        <div class="gameboard">
+
+            <!-- TicTacToe Box -->
+            <div class="tictactoe">
+                
+                <!-- Tic Tac Toe Boxes -->
+                <script>
+                    const NUM_SQUARES = 9;
+                    for (i=0; i<NUM_SQUARES; i++)
+                    {
+                    id = "sq"+i;
+                    document.write( "<div class='square' id='" + id + "'></div>" );
+                    }
+                </script>
+
+            </div>
+            
+            <br><br>
+            
+            <!-- Turnbox -->
+            <div class="turnbox">
+                <h2>Whose Turn Is It?</h2>
+                <p id="turn_indicator">It is currently a mystery...</p>
+            </div>
+
+            <br>
+
+            <!-- Winnerbox -->
+            <div class="winnerbox">
+                <p><span id="winner">Placeholder</span> is the winner!</p>
+            </div>
+
+        </div>
+    
     </body>
+
 </html>
