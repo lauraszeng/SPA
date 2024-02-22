@@ -162,6 +162,37 @@
                             var movestring = moves.join("");
                             console.log(movestring);
 
+                            // not sure how to tackle the next part, so here is my thought process on how it should work
+                            // there are 8 possible win conditions: 
+                            // moves[0] == moves[1] == moves[2]
+                            // moves[3] == moves[4] == moves[5]
+                            // moves[6] == moves[7] == moves[8]
+                            // moves[0] == moves[3] == moves[6]
+                            // moves[1] == moves[4] == moves[7]
+                            // moves[2] == moves[5] == moves[8]
+                            // moves[0] == moves[4] == moves[8]
+                            // moves[2] == moves[4] == moves[6]
+                            // create a function that determines whether the specified elements of the array "moves" all match the order above
+                            // before it does that though, it should make sure that only 4 or less of the elements in "moves" consist of "-"
+                            // this is bc the minimum number of moves needed to win a tic tac toe game is 5, thus there should be at most 4 moves remaining
+                            // we can do this by making a variable called "dashcount", iterating through "moves", and adding 1 to dashcount every time it finds a dash
+                            // if dash count is 4 or less, proceed with something like
+                            // this function is very ugly but i am not sure how else to do this
+                                // if 
+                                // (
+                                // moves[0] == moves[1] == moves[2] || 
+                                // moves[3] == moves[4] == moves[5] || 
+                                // moves[6] == moves[7] == moves[8] ||
+                                // moves[0] == moves[3] == moves[6] ||
+                                // moves[1] == moves[4] == moves[7] ||
+                                // moves[2] == moves[5] == moves[8] ||
+                                // moves[0] == moves[4] == moves[8] ||
+                                // moves[2] == moves[4] == moves[6]) {
+                                    // document.getElementById("winnerbox").innerhtml = whichever one was determined to be the winner, still unsure of how to determine this
+                                    // to disallow anymore moves, since this is all still in the event listener, add an empty <p></p> to every box
+                                    // since the previous logic won't allow innerhtml to change if there's something in the box, having an empty <p> will prevent the square <div> from changing
+                                // }
+
                         })
 
                     }
