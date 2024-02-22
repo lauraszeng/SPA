@@ -1,0 +1,212 @@
+<!DOCTYPE html>
+<html lang="eng">
+    <head>
+        <title>Tic Tac Toe Javascript</title>
+        <style>
+            
+            /* Title block CSS */
+            .title {
+                margin: 0;
+                position: absolute;
+                top: 5%;
+                left: 50%;
+                transform: translate(-50%, -50%);
+            }
+
+            /* Gameboard CSS */
+            .gameboard {
+                margin: 0%;
+                position: absolute;
+                top: 45%;
+                left: 50%;
+                transform: translate(-50%, -50%);
+            }
+            
+            /* TicTacToe board CSS */
+            .tictactoe {
+                display: grid;
+                grid-template-columns: 120px 120px 120px;
+            }
+            
+            /* Individual square CSS */
+            .square {
+                border: 5px solid;
+                background-color: bisque;
+                display: inline-block;
+                height: 100px;
+                width: 100px;
+                vertical-align: top;
+                text-align: center;
+                line-height: 100px;;
+                margin: 5px 5px 5px 5px;
+            }
+            .square:hover {
+                background-color: aqua;
+            }
+
+            /* Turnbox CSS */
+            .turnbox {
+                border-style: groove;
+            }
+            /* <h2> and <p> within turnbox CSS */
+            .turnbox h2,p {
+                text-align: center;
+            }
+
+            /* Winnerbox CSS */
+            .winnerbox {
+                border-style: groove;
+                border-color: crimson;
+            }
+
+            /*Gamestart CSS*/
+            #gamestart {
+                display: block;
+                margin: auto;
+                width: 50%;
+            }
+
+        </style>
+
+    </head>
+
+    <body>
+
+        <!-- Title Box -->
+        <div class="title">
+            <h1>Tic Tac Toe</h1>
+        </div>
+
+        <div class="gameboard">
+
+            <!-- TicTacToe Box -->
+            <div class="tictactoe">
+                
+                <!-- Tic Tac Toe Boxes -->
+                <script>
+                    
+                    // creates tictactoe squares
+                    const NUM_SQUARES = 9;
+                    
+                    // loop that creates a <div> with class "square" with sequential id and corresponding <p> every time it iterates
+                    for (i=0; i<NUM_SQUARES; i++)
+                    {
+                    id = i;
+                    document.write( "<div class='square' id='" + id + "'></div>" );
+                    }
+                    
+                    // set variable "square" that stores all elements with class "square" as an array
+                    var squares = document.getElementsByClassName("square");
+
+                    // create array to represent the empty values of all boxes
+                    var empty_grid = ["-", "-", "-", "-", "-", "-", "-", "-", "-"]
+
+                    // set variable to randomly determine who should go first                    
+                    // this generates a random value between 0-10
+                    var turn_count = Math.floor(Math.random() * 10);
+
+                    // as soon as page is loaded, display whose turn it is in the turnbox
+                    // for reference, X's are odd and O's are even
+                    window.onload = function() {
+                        if (turn_count % 2 == 0) {
+                            document.getElementById("turn_indicator").innerHTML = "O";
+                        } else {
+                            document.getElementById("turn_indicator").innerHTML = "X";
+                        }
+                    }
+                    
+                    // iterate through array of squares
+                    for (const square of squares)
+                    {
+                        
+                        // set event listener that reacts when individual square is clicked
+                        square.addEventListener("click", function() {
+                            
+                            // if there's something already in the square, aka if the square's innerHTML doesn't equal "", exit the function immediately
+                            // btw trim() trims off the whitespace
+                            if (document.getElementById(square.id).innerHTML.trim() != "") return;
+                            
+                            // increase turn count by one
+                            turn_count++;
+                            
+                            // navigate to the individual square and change text depending on whose turn it is
+                            // for reference, X's are odd and O's are even
+                            // also change the innerhtml of the turnbox accordingly
+                            if (turn_count % 2 == 0) {
+                                document.getElementById(square.id).innerHTML = "X";
+                                document.getElementById("turn_indicator").innerHTML = "O";
+                            } else {
+                                document.getElementById(square.id).innerHTML = "O";
+                                document.getElementById("turn_indicator").innerHTML = "X";
+                            }
+
+                            //create variable that stores the id value of the square
+                            var square_id = square.id;
+                            console.log(square_id);
+
+                            // create a string that represents the values of the squares which have been filled in
+                            // create array called moves that contains modifications to array "empty_grid"
+                            var moves = empty_grid.map((element, index, array) => {
+                                // if the square whose id corresponds with the index number is empty, fill it with a "-"
+                                // otherwise, fill it with the innerhtml of the square!
+                                if (document.getElementById(index).innerHTML != "") {
+                                    return document.getElementById(index).innerHTML;
+                                } else {
+                                    return "-";
+                                }
+                            })
+                            // then put it in the console bc what am i doing!
+                            console.log(moves);
+
+                            // create a variable that stores the array from moves into a string
+                            var movestring = moves.join("");
+                            console.log(movestring);
+
+                        })
+
+                    }
+                    
+                </script>
+
+            </div>
+            
+            <br><br>
+            
+            <!-- Turnbox -->
+            <div class="turnbox">
+                <h2>Whose Turn Is It?</h2>
+                <p id="turn_indicator">_</p>
+            </div>
+
+            <br>
+
+            <!-- Winnerbox -->
+            <div class="winnerbox">
+                <p><span id="winner">Placeholder</span> is the winner!</p>
+            </div>
+
+            <br>
+
+            <!-- Gamestart -->
+            <button type="button" id="gamestart">
+                <script>
+                    // set variable "square" that stores all elements with class "square" as an array
+                    var squares = document.getElementsByClassName("square");
+
+                    for (const square of squares) {
+                        document.getElementById("gamestart").addEventListener("click", function() {
+                            document.getElementById(square.id).innerHTML = "";
+                        })
+                    }
+
+                </script>
+                
+                Start Game
+
+            </button>
+
+        </div>
+    
+    </body>
+
+</html>
