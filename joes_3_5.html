@@ -1,0 +1,98 @@
+<!DOCTYPE html>
+<html lang="eng">
+
+<head>
+    <title>
+        Joes's Hot Dog Stand
+    </title>
+    
+    <style>
+        .menubox {
+            border: 5px solid;
+            padding: 10px;
+        }
+
+        #shopping_cart {
+            border: 5px solid;
+        }
+    </style>
+</head>
+
+<body>  
+
+    <div class="menubox">
+        <h1>
+            Function Object Menu
+        </h1>
+        
+        <div id="function_menu">
+            placeholder
+        </div>
+
+        <script>
+        // represent values with function object
+        var menu_items = []
+        function Menu(item, price) {
+            this.item = item;
+            this.price = price;
+            this.show = function () {return this.item + ": $" + this.price + "<br>"}
+            // add item to array of menu items
+            menu_items.push(this)
+        }
+        
+        // add instances
+        var hotdog = new Menu("Hotdog", 4);
+        var fries = new Menu("Fries", 3.50);
+        var soda = new Menu("Soda", 1.50);
+        var sauerkraut = new Menu("Sauerkraut", 1);
+        
+        // display as menu
+        // create empty string for menu items to be passed to
+        var object_html = "";
+        // go through array of menu items
+        for (item in menu_items) {
+            object_html += menu_items[item].show()
+        }
+        // change innerHTML of relevant <div>
+        document.getElementById("function_menu").innerHTML = object_html;
+        </script>
+    </div>
+
+    <br><br>
+
+    <input type="text" id="menu_input"> <button id="menu_confirm" onclick="add_to_cart()">Add to Cart</button>
+
+    <script>
+        // associative array of menu items, initialized to 0
+        var shopping_cart = [];
+        shopping_cart["hotdog"] = 0;
+        shopping_cart["fries"] = 0;
+        shopping_cart["soda"] = 0;
+        shopping_cart["sauerkraut"] = 0;
+        console.log(shopping_cart)
+
+        function add_to_cart() {
+            var menu_input = document.getElementById("menu_input").value.toString()
+            menu_input = menu_input.toLowerCase();
+            for (item in shopping_cart) {
+                if (menu_input == item.toLowerCase()) {
+                    shopping_cart[item] = parseInt(shopping_cart[item]) + 1
+                    console.log(shopping_cart[item])
+                }
+                document.getElementById("menu_input").value = "";
+            }
+        }
+    </script>
+
+    <br><br>
+
+    <div id="shopping_cart">
+        placeholder
+    </div>
+
+    <br><br>
+
+    <button>Checkout</button>
+</body>
+
+</html>

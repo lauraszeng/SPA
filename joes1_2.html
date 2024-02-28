@@ -1,0 +1,95 @@
+<!DOCTYPE html>
+<html lang="eng">
+
+<head>
+    <title>
+        Joes's Hot Dog Stand
+    </title>
+    
+    <style>
+        .menubox {
+            border: 5px solid;
+            padding: 10px;
+        }
+    </style>
+
+    <script>          
+        // represent values as an associative array
+        var assoc_menu = [];
+        assoc_menu["hotdogs"] = 4;
+        assoc_menu["fries"] = 3.50;
+        assoc_menu["soda"] = 1.50;
+        assoc_menu["sauerkraut"] = 1;
+    </script>
+</head>
+
+<body>  
+    <div class="menubox">
+        <h1>
+            JSON Menu
+        </h1>
+        
+        <div id="json_menu">
+            placeholder
+        </div>
+
+        <script>
+        // represent values as a JSON object
+        var JSON_menu = {
+            "Hotdogs": 4,
+            "Fries": 3.50,
+            "Soda": 1.50,
+            "Sauerkraut": 1
+        }
+        // display as menu
+        var JSON_html = "";
+        for (item in JSON_menu) {
+            JSON_html += item + ": $" + JSON_menu[item] + "<br>";
+        }
+        document.getElementById("json_menu").innerHTML = JSON_html;
+        </script>
+    </div>
+
+    <br><br>
+
+    <div class="menubox">
+        <h1>
+            Function Object Menu
+        </h1>
+        
+        <div id="function_menu">
+            placeholder
+        </div>
+
+        <script>
+        // represent values with function object
+        var menu_items = []
+        function Menu(item, price) {
+            this.item = item;
+            this.price = price;
+            this.show = function () {return this.item + ": $" + this.price + "<br>"}
+            // add item to array of menu items
+            menu_items.push(this)
+        }
+        
+        // add instances
+        var hotdog = new Menu("Hotdog", 4);
+        var fries = new Menu("Fries", 3.50);
+        var soda = new Menu("Soda", 1.50);
+        var sauerkraut = new Menu("Sauerkraut", 1);
+        
+        // display as menu
+        // create empty string for menu items to be passed to
+        var object_html = "";
+        // go through array of menu items
+        for (item in menu_items) {
+            object_html += menu_items[item].show()
+        }
+        // change innerHTML of relevant <div>
+        document.getElementById("function_menu").innerHTML = object_html;
+        </script>
+    </div>
+
+</body>
+
+</html>
