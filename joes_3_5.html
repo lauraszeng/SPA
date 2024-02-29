@@ -22,7 +22,7 @@
 
     <div class="menubox">
         <h1>
-            Function Object Menu
+            Menu
         </h1>
         
         <div id="function_menu">
@@ -32,26 +32,30 @@
         <script>
         // represent values with function object
         var menu_items = []
-        function Menu(item, price) {
+        function Menu(item, price, amount) {
             this.item = item;
             this.price = price;
+            this.amount = amount;
             this.show = function () {return this.item + ": $" + this.price + "<br>"}
+            this.cart_show = function () {return this.item + " (" + this.amount + ") = $" + (this.price * this.amount) + "<br>"}
+            this.checkout_show = function () {return this.item + " (" + this.amount + ") = $" + (this.price * this.amount) + "\n\n"}
+            this.total_price = function () {return this.price * this.amount}
             // add item to array of menu items
             menu_items.push(this)
         }
         
         // add instances
-        var hotdog = new Menu("Hotdog", 4);
-        var fries = new Menu("Fries", 3.50);
-        var soda = new Menu("Soda", 1.50);
-        var sauerkraut = new Menu("Sauerkraut", 1);
+        var hotdog = new Menu("Hotdog", 4, 0);
+        var fries = new Menu("Fries", 3.50, 0);
+        var soda = new Menu("Soda", 1.50, 0);
+        var sauerkraut = new Menu("Sauerkraut", 1, 0);
         
         // display as menu
         // create empty string for menu items to be passed to
         var object_html = "";
         // go through array of menu items
         for (item in menu_items) {
-            object_html += menu_items[item].show()
+            object_html += menu_items[item].show();
         }
         // change innerHTML of relevant <div>
         document.getElementById("function_menu").innerHTML = object_html;
@@ -69,30 +73,86 @@
         shopping_cart["fries"] = 0;
         shopping_cart["soda"] = 0;
         shopping_cart["sauerkraut"] = 0;
-        console.log(shopping_cart)
+
+        // create variable to store the list to be displayed in shopping cart <div>
+        var cart_view = []
 
         function add_to_cart() {
+            // pass the input in the text box to variable "menu_input" as a string
             var menu_input = document.getElementById("menu_input").value.toString()
-            menu_input = menu_input.toLowerCase();
-            for (item in shopping_cart) {
-                if (menu_input == item.toLowerCase()) {
-                    shopping_cart[item] = parseInt(shopping_cart[item]) + 1
-                    console.log(shopping_cart[item])
+            
+            // make it all lowercase so as to avoid case sensitivity
+            var menu_input = menu_input.toLowerCase();
+            // iterate through items in array "shopping_cart"
+            
+            for (menu_item in menu_items) {
+                // if menu_input is the same as any item in menu_items, then add 1 to item's value
+                if (menu_input == menu_items[menu_item].item.toLowerCase()) {
+                    menu_items[menu_item].amount = parseInt(menu_items[menu_item].amount) + 1
                 }
-                document.getElementById("menu_input").value = "";
+                // if the amount value of menu_item is 1 or more, add it to the array called "cart_view"
+                if (parseInt(menu_items[menu_item].amount) > 0) {
+                    cart_view.push(menu_items[menu_item].cart_show());
+                    // turn array cart_view into a string, with commas removed, and pass it to the innerHTML of shopping cart <div>
+                    var cart_string = cart_view.join("")
+                    document.getElementById("shopping_cart").innerHTML = cart_string;
+                    //console.log(menu_items[menu_item].total_price())
+                }
             }
+
+            // clear text box
+            document.getElementById("menu_input").value = "";
+            // clear cart_view, so that it can be newly updated with the next click
+            cart_view = []
         }
+
     </script>
 
     <br><br>
 
     <div id="shopping_cart">
-        placeholder
+        Empty
     </div>
 
     <br><br>
 
-    <button>Checkout</button>
+    <button onclick="checkout()">Checkout</button>
+    <script>
+        // create variable to store the list to be displayed in checkout popup
+        var checkout_view = []
+        
+        function checkout() {
+            // create a variable to represent the checkout total
+            var checkout_total = 0;
+            
+            // iterate through all the menu items
+            for (menu_item in menu_items) {
+                // add the total_price value of each menu_item to checkout_total
+                checkout_total += menu_items[menu_item].total_price();
+                if (menu_items[menu_item].total_price() > 0) {
+                    // add menu_item's cart_show value to checkout_view array
+                    checkout_view.push(menu_items[menu_item].checkout_show())
+                }
+            }
+
+            // turn checkout_view into a string with commas removed
+            var checkout_string = checkout_view.join("");
+            console.log(checkout_view)
+            // create popup alerting customer of total
+            alert(checkout_string + "Your total is $" + checkout_total);
+            // clear checkout_view, so that it can be newly updated with the next click
+            checkout_view = [];
+            // clear shopping cart <div>
+            document.getElementById("shopping_cart").innerHTML = "Empty";
+            
+            // set the amount of every item in menu_items to 0
+            for (menu_item in menu_items) {
+                menu_items[menu_item].amount = 0;
+            }
+
+            console.log(menu_items)
+        }
+    </script>
 </body>
 
 </html>
