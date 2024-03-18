@@ -5,19 +5,241 @@
     <title>
         Wordle
     </title>
+
     <style>
-        div {
-            border-style: double;
+        .content_box {
+            border-style: solid;
+            margin-left: 20px;
+            margin-right: 20px;
+            margin-top: 5px;
+            margin-bottom: 5px;
+            padding: 5px 5px 5px 5px;
+        }
+
+        h1 {
+            font-size: 20px;
+        }
+
+        #replay {
+            display: none;
+        }
+
+        .letter_box {
+            height: 30px;
+            width: 30px;
+            border-style: solid;
+            border-color: aliceblue;
+            font-family: Arial, Helvetica, sans-serif;
+            color: aliceblue;
+            text-align: center;
+            font-size: 20px;
+            display: inline-block;
+        }
+
+        .index_correct {
+            background-color:limegreen;
+        }
+
+        .content_correct {
+            background-color: goldenrod;
+        }
+
+        .totally_wrong {
+            background-color: rgb(115, 118, 118);
+            color:white;
         }
     </style>
+    <script>
+        // create array to which each created wordbank item will be passed to upon creation
+        var wordbank_items = []
+        
+        // represent values with function object
+        function Wordbank(word) {
+            this.word = word;
+            this.listform = word.split("");
+            wordbank_items.push(this)
+        }
+
+        // add instances
+        var apple = new Wordbank("apple");
+        var hound = new Wordbank("hound");
+        var plate = new Wordbank("plate");
+        var firms = new Wordbank("firms");
+
+        // get random item from wordbank
+        var target_word = wordbank_items[Math.floor(Math.random() * wordbank_items.length)];
+        console.log(target_word);
+
+        // create a function that shows the target word in the debug_box
+        function debug() {
+            // do this when debug_button gets clicked
+            document.getElementById("debug_button").addEventListener("click", () => {
+                // turn the listform array from target_word into a string and pass into variable "debug_word"
+                var debug_word = target_word.listform.join("");
+                // put debug_word
+                document.getElementById("debug_text").innerHTML = debug_word;
+            })
+        }
+
+        // make a regular expression that checks whether characters in a string are within a-z
+        var alphabet = /[a-z]/
+
+        // create function that checks whether or not everything within an array of characters is an actual letter
+        function letter_checker(input_array) {
+            input_array.forEach((letter, index, array) => {
+                // if you find something that's not in the lowercase alphabet, return true
+                if (alphabet.test(array[index]) == false) {
+                    console.log("non-letter detected")
+                    return 1;
+                }
+                else {
+                    return 2;
+                }
+            })
+        }
+
+        // create function that determines whether the input from guessbox matches up to target_word
+        function word_validation() {
+            // create variable "turn_counter" that counts up from zero every time the submit button gets pressed
+            var turn_counter = 0;
+           
+            // run this when the "guess_confirm" button gets clicked
+            document.getElementById("guess_confirm").addEventListener("click", () => {
+                // get the input from input box, turn it into a string, then divvy up all the letters of the string into an array
+                var word_input = document.getElementById("word_input").value.toString().split("");
+                
+                // now validate the input!
+                // make sure that word_input is 5 letters long
+                if (word_input.length != 5) {
+                    alert("Please make sure your input is exactly 5 letters long.");
+                    return;
+                }
+                // also go through each letter and make it lowercase
+                word_input.forEach((letter, index, array) => {
+                    array[index] = letter.toLowerCase();
+                })
+                // also make sure it's an actual letter, by using the letter_checker() function
+                console.log("hey")
+                console.log(letter_checker(word_input))
+                // if (letter_checker(word_input) == true) {
+                //     console.log("damn")
+                // }
+                // // if (letter_checker(word_input) == false) {
+                // //     alert("waaaa");
+                // // }
+
+                // create variable "correct_ticker" that counts up from zero every time a letter in word_input matches with target_word.listform
+                var correct_ticker = 0;
+
+                // iterate through all the letters in word_input
+                for (letter in word_input) {
+                    // create variable to represent word_input[letter] as a string
+                    character = word_input[letter]
+                    
+                    // create variable "letter_box" that will append a <div> to the result_box
+                    letter_box = document.createElement("div");
+                    letter_box.textContent = character;
+                    letter_box.setAttribute("class", "letter_box");
+                    
+                    // now determine the letter <div>'s background 
+                    // if the letter matches index to index with target_word.listform, add the class "position_correct" to "letterbox"
+                    if (character == target_word.listform[letter]) {
+                        letter_box.classList.add("index_correct");
+                        // also add 1 to correct_ticker
+                        correct_ticker++
+                    }
+                    // otherwise, if the letter is contained within target_word.listform somewhere, add the class "content_correct"
+                    else if (target_word.listform.includes(character)) {
+                        letter_box.classList.add("content_correct");
+                    }
+                    // otherwise, add the class "totally_wrong"
+                    else {
+                        letter_box.classList.add("totally_wrong");
+                    }
+                    
+                    // stick the <div> onto result_box
+                    document.getElementById("result_box").appendChild(letter_box);
+                }
+                
+                // add on a blank <div> to create a line break
+                blank = document.createElement("div");
+                document.getElementById("result_box").appendChild(blank)
+                
+                // if all the letters are correct, then disable the input box
+                if (correct_ticker == 5) {
+                    document.getElementById("word_input").disabled = true;
+                    document.getElementById("guess_confirm").disabled = true;
+                    document.getElementById("word_input").value = "YOU WIN!";
+                }
+                
+                // add 1 to turn_counter
+                turn_counter++
+                // if all 6 turns have been used up, disable the input box
+                if (turn_counter == 6) {
+                    document.getElementById("word_input").disabled = true;
+                    document.getElementById("guess_confirm").disabled = true;
+                    document.getElementById("word_input").value = "YOU LOSE!";
+                }
+            })
+        }
+
+        // as soon as the page loads, run a couple of functions
+        document.addEventListener("DOMContentLoaded", function() {
+            word_validation();
+            debug();
+        })
+
+    </script>
 </head>
 
 <body>
-    <div id="guessbox">
-        <script>
-            var wordle_row = document.createElement("div");
-            wordle_row.className = "wordle_row";
-        </script>
+    <div id="rulebox" class="content_box">
+        <h1>Rules for Wordle</h1>
+        <p>
+            The player has 6 tries to guess a 5 letter word. Guesses must be valid 5 letter words (you will need to check this). For each letter in the guess, you must report one of three results:
+            <ul>
+                <li>if the letter is not in the answer</li>
+                <li>if the in the answer but in a different place than in your guess word</li>
+                <li>if the letter is in the same place as in the guess word</li>
+            </ul>
+            The game ends when the user guesses the word or uses all 6 guesses.
+        </p>
+        <p>
+            Required Features:
+            <ul>
+                <li>Display a used letter indicator so that the user can avoid letters that are eliminated.</li>
+                <li>Include an optional “debug” mode (switchable at the start of the game) that displays the answer so that it is easier to check correct operation. </li>
+                <li>Allow the user to play multiple games. </li>
+                <li>Responsive to tablet size (down to 700px) </li>
+            </ul>
+            Optional Features:
+            <ul>
+                <li>statistics of wins and losses- and how many guesses a win needed.</li>
+                <li>Some animation when the user wins.</li>
+                <li>Responsive to 600px wide</li>
+            </ul>
+        </p>
+        </p>
+    </div>
+    <div id="debug_box" class="content_box">
+        <h1>Target Word</h1>
+        <button id="debug_button">Debug</button>
+        <pre id="debug_text">
+
+         ∧,,,∧
+　      ( ・ω・） It sure is a mystery.
+　　    ( つ旦O
+　　    と＿)_)
+        </pre>
+    </div>
+
+    <div id="guess_box" class="content_box">
+       <input type="text" id="word_input" minlength="5" maxlength="5"> <button id="guess_confirm">Submit</button>
+       <button id="replay" display=none>Replay</button>
+    </div>
+
+    <div id="result_box" class="content_box">
+
     </div>
 </body>
 
