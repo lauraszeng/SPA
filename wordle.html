@@ -50,6 +50,33 @@
         }
     </style>
     <script>
+        // make a regular expression that checks whether characters in a string are within a-z
+        var alphabet = /[a-z]/;
+
+        // using Random Word API ("https://random-word-api.herokuapp.com/home"), get a random five letter word and turn it into an array
+        function word_finder() {
+            // make empty array for target_word
+            target_word = [];
+            // make instance of request object
+            request = fetch("https://random-word-api.herokuapp.com/word?length=5")
+            .then(request => request.text())
+            .then (data => {
+                // split data into array "random_word"
+                random_word = data.split("")
+                // filter out anything in the array that isn't a letter of the alphabet with regular expression
+                // iterate through random_word array
+                for (item in random_word) {
+                    // if the item in random_word is a letter of the alphabet, push it to array target_word
+                    if (alphabet.test(random_word[item]) == true) {
+                        target_word.push(random_word[item])
+                        console.log(target_word)
+                    }
+                }
+            })
+            .catch (error => console.log(error))
+
+        }
+        
         // create array to which each created wordbank item will be passed to upon creation
         var wordbank_items = []
         
@@ -81,33 +108,39 @@
             })
         }
 
-        // make a regular expression that checks whether characters in a string are within a-z
-        var alphabet = /[a-z]/
+        // create variable "turn_counter" that counts up from zero every time the submit button gets pressed
+        var turn_counter = 0;
 
         // create function that checks whether or not everything within an array of characters is an actual letter
         function letter_checker(input_array) {
             input_array.forEach((letter, index, array) => {
-                // if you find something that's not in the lowercase alphabet, return true
-                if (alphabet.test(array[index]) == false) {
-                    console.log("non-letter detected")
-                    return 1;
+                // if you find something that's in the lowercase alphabet, return true
+                if (alphabet.test(array[index]) == true) {
+                    console.log("letter detected")
+                    return true;
                 }
+                // otherwise return false
                 else {
-                    return 2;
+                    console.log("non-letter detected")
+                    return false;
                 }
             })
         }
 
         // create function that determines whether the input from guessbox matches up to target_word
         function word_validation() {
-            // create variable "turn_counter" that counts up from zero every time the submit button gets pressed
-            var turn_counter = 0;
-           
+
+            target = word_finder()
+            console.log(target)
+
             // run this when the "guess_confirm" button gets clicked
             document.getElementById("guess_confirm").addEventListener("click", () => {
+                // hide replay button
+                document.getElementById("replay").style.display = "none";
+                
                 // get the input from input box, turn it into a string, then divvy up all the letters of the string into an array
                 var word_input = document.getElementById("word_input").value.toString().split("");
-                
+
                 // now validate the input!
                 // make sure that word_input is 5 letters long
                 if (word_input.length != 5) {
@@ -119,14 +152,14 @@
                     array[index] = letter.toLowerCase();
                 })
                 // also make sure it's an actual letter, by using the letter_checker() function
-                console.log("hey")
-                console.log(letter_checker(word_input))
-                // if (letter_checker(word_input) == true) {
-                //     console.log("damn")
-                // }
-                // // if (letter_checker(word_input) == false) {
-                // //     alert("waaaa");
-                // // }
+                letter_checker(word_input)
+                console.log(test())
+                if (test() == true) {
+                    console.log("ok")
+                }
+                if (letter_checker(word_input) == false) {
+                    console.log("hey that's not a letter");
+                }
 
                 // create variable "correct_ticker" that counts up from zero every time a letter in word_input matches with target_word.listform
                 var correct_ticker = 0;
@@ -170,6 +203,7 @@
                     document.getElementById("word_input").disabled = true;
                     document.getElementById("guess_confirm").disabled = true;
                     document.getElementById("word_input").value = "YOU WIN!";
+                    document.getElementById("replay").style.display = "inline-block"
                 }
                 
                 // add 1 to turn_counter
@@ -179,7 +213,29 @@
                     document.getElementById("word_input").disabled = true;
                     document.getElementById("guess_confirm").disabled = true;
                     document.getElementById("word_input").value = "YOU LOSE!";
+                    document.getElementById("replay").style.display = "inline-block"
                 }
+            })
+        }
+
+        // create function that lets you replay the game
+        function replay() {
+            // run this when the "replay" button gets clicked
+            document.getElementById("replay").addEventListener("click", () => {
+                // reenable the word_input bar and the guess_confirm button
+                document.getElementById("word_input").disabled = false;
+                document.getElementById("word_input").value = "";
+                document.getElementById("guess_confirm").disabled = false;
+
+                // erase whatever's in the result_box <div>
+                document.getElementById("result_box").innerHTML = "";
+                
+                // set turn_counter variable back to 0
+                turn_counter = 0;
+
+                // re-randomize the target_word
+                target_word = wordbank_items[Math.floor(Math.random() * wordbank_items.length)];
+                console.log(target_word);
             })
         }
 
@@ -187,6 +243,7 @@
         document.addEventListener("DOMContentLoaded", function() {
             word_validation();
             debug();
+            replay();
         })
 
     </script>
