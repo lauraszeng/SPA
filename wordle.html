@@ -76,7 +76,6 @@
                     // if the item in random_word is a letter of the alphabet, push it to array target_word
                     if (alphabet.test(random_word[item]) == true) {
                         target.push(random_word[item])
-                        console.log(target)
                     }
                 }
             })
@@ -84,17 +83,21 @@
         }
 
         // using Dictionary API (https://dictionaryapi.dev), check whether a word is in the dictionary
-        function dictionary(word_input) {
+        async function dictionary(word_input) {
             // make instance of request object
-            request = fetch("https://api.dictionaryapi.dev/api/v2/entries/en/" + word_input)
-            .then (request => request.text())
-            .then (data => {
-                //console.log(JSON.parse(data))
-            })
-            .catch (error => {
-                //console.log(error)
+            response = fetch("https://api.dictionaryapi.dev/api/v2/entries/en/" + word_input)
+
+            if (!response.ok) {
                 console.log("aiya")
-            })
+            }
+            // .then (response => response.text())
+            // .then (data => {
+            //     //console.log(JSON.parse(data))
+            // })
+            // .catch (error => {
+            //     //console.log(error)
+            //     console.log("aiya")
+            // })
         }
 
         // create a function that shows the target word in the debug_box
