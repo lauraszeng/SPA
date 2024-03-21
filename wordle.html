@@ -50,88 +50,79 @@
         }
     </style>
     <script>
+        //TF email: mike32jacobs@gmail.com
+
         // make a regular expression that checks whether characters in a string are within a-z
         var alphabet = /[a-z]/;
 
+        // create variable "target" to be populated with array to be wordled, so to speak
+        var target = []
+
+        // create variable "turn_counter" that counts up from zero every time the submit button gets pressed
+        var turn_counter = 0;
+
         // using Random Word API ("https://random-word-api.herokuapp.com/home"), get a random five letter word and turn it into an array
         function word_finder() {
-            // make empty array for target_word
-            target_word = [];
             // make instance of request object
             request = fetch("https://random-word-api.herokuapp.com/word?length=5")
-            .then(request => request.text())
+            .then(response => response.text())
             .then (data => {
                 // split data into array "random_word"
-                random_word = data.split("")
+                console.log(data)
+                var random_word = data.split("")
                 // filter out anything in the array that isn't a letter of the alphabet with regular expression
                 // iterate through random_word array
                 for (item in random_word) {
                     // if the item in random_word is a letter of the alphabet, push it to array target_word
                     if (alphabet.test(random_word[item]) == true) {
-                        target_word.push(random_word[item])
-                        console.log(target_word)
+                        target.push(random_word[item])
+                        console.log(target)
                     }
                 }
             })
             .catch (error => console.log(error))
-
-        }
-        
-        // create array to which each created wordbank item will be passed to upon creation
-        var wordbank_items = []
-        
-        // represent values with function object
-        function Wordbank(word) {
-            this.word = word;
-            this.listform = word.split("");
-            wordbank_items.push(this)
         }
 
-        // add instances
-        var apple = new Wordbank("apple");
-        var hound = new Wordbank("hound");
-        var plate = new Wordbank("plate");
-        var firms = new Wordbank("firms");
-
-        // get random item from wordbank
-        var target_word = wordbank_items[Math.floor(Math.random() * wordbank_items.length)];
-        console.log(target_word);
+        // using Dictionary API (https://dictionaryapi.dev), check whether a word is in the dictionary
+        function dictionary(word_input) {
+            // make instance of request object
+            request = fetch("https://api.dictionaryapi.dev/api/v2/entries/en/" + word_input)
+            .then (request => request.text())
+            .then (data => {
+                //console.log(JSON.parse(data))
+            })
+            .catch (error => {
+                //console.log(error)
+                console.log("aiya")
+            })
+        }
 
         // create a function that shows the target word in the debug_box
         function debug() {
             // do this when debug_button gets clicked
             document.getElementById("debug_button").addEventListener("click", () => {
                 // turn the listform array from target_word into a string and pass into variable "debug_word"
-                var debug_word = target_word.listform.join("");
+                var debug_word = target.join("");
                 // put debug_word
                 document.getElementById("debug_text").innerHTML = debug_word;
             })
         }
 
-        // create variable "turn_counter" that counts up from zero every time the submit button gets pressed
-        var turn_counter = 0;
-
         // create function that checks whether or not everything within an array of characters is an actual letter
         function letter_checker(input_array) {
-            input_array.forEach((letter, index, array) => {
-                // if you find something that's in the lowercase alphabet, return true
-                if (alphabet.test(array[index]) == true) {
-                    console.log("letter detected")
-                    return true;
-                }
-                // otherwise return false
-                else {
-                    console.log("non-letter detected")
+            // iterate through all letters in the input array
+            for (letter in input_array) {
+                // if there's a non-letter present, return false
+                if (alphabet.test(input_array[letter]) == false) {
                     return false;
                 }
-            })
+            }
         }
 
         // create function that determines whether the input from guessbox matches up to target_word
-        function word_validation() {
-
-            target = word_finder()
-            console.log(target)
+        async function word_validation() {
+            // find a random 5 letter word to target with word_finder()
+            await word_finder()
 
             // run this when the "guess_confirm" button gets clicked
             document.getElementById("guess_confirm").addEventListener("click", () => {
@@ -140,6 +131,8 @@
                 
                 // get the input from input box, turn it into a string, then divvy up all the letters of the string into an array
                 var word_input = document.getElementById("word_input").value.toString().split("");
+
+                console.log("mark1", target)
 
                 // now validate the input!
                 // make sure that word_input is 5 letters long
@@ -151,14 +144,13 @@
                 word_input.forEach((letter, index, array) => {
                     array[index] = letter.toLowerCase();
                 })
+
                 // also make sure it's an actual letter, by using the letter_checker() function
-                letter_checker(word_input)
-                console.log(test())
-                if (test() == true) {
-                    console.log("ok")
-                }
-                if (letter_checker(word_input) == false) {
-                    console.log("hey that's not a letter");
+                var is_letter = letter_checker(word_input)
+
+                if (is_letter == false) {
+                    alert("PLEASE use actual letters...");
+                    return false;
                 }
 
                 // create variable "correct_ticker" that counts up from zero every time a letter in word_input matches with target_word.listform
@@ -176,13 +168,13 @@
                     
                     // now determine the letter <div>'s background 
                     // if the letter matches index to index with target_word.listform, add the class "position_correct" to "letterbox"
-                    if (character == target_word.listform[letter]) {
+                    if (character == target[letter]) {
                         letter_box.classList.add("index_correct");
                         // also add 1 to correct_ticker
                         correct_ticker++
                     }
                     // otherwise, if the letter is contained within target_word.listform somewhere, add the class "content_correct"
-                    else if (target_word.listform.includes(character)) {
+                    else if (target.includes(character)) {
                         letter_box.classList.add("content_correct");
                     }
                     // otherwise, add the class "totally_wrong"
@@ -212,7 +204,7 @@
                 if (turn_counter == 6) {
                     document.getElementById("word_input").disabled = true;
                     document.getElementById("guess_confirm").disabled = true;
-                    document.getElementById("word_input").value = "YOU LOSE!";
+                    document.getElementById("word_input").value = "Wow! YOU LOST!";
                     document.getElementById("replay").style.display = "inline-block"
                 }
             })
@@ -227,23 +219,28 @@
                 document.getElementById("word_input").value = "";
                 document.getElementById("guess_confirm").disabled = false;
 
-                // erase whatever's in the result_box <div>
+                // erase whatever's in the result_box <div> and debug_text <div>
                 document.getElementById("result_box").innerHTML = "";
+                document.getElementById("debug_text").innerHTML = " ∧,,,∧<br>( ・ω・） It sure is a mystery.<br>( つ旦O<br>と＿)_)";
                 
-                // set turn_counter variable back to 0
+                // set turn_counter variable back to 0 and clear target array
                 turn_counter = 0;
-
+                target = []
+                
                 // re-randomize the target_word
-                target_word = wordbank_items[Math.floor(Math.random() * wordbank_items.length)];
-                console.log(target_word);
+                word_finder()
+                console.log(target);
             })
         }
 
         // as soon as the page loads, run a couple of functions
         document.addEventListener("DOMContentLoaded", function() {
+            // word_finder();
             word_validation();
             debug();
             replay();
+            //dictionary("hello");
+            dictionary("hgeklrahj");
         })
 
     </script>
@@ -251,16 +248,6 @@
 
 <body>
     <div id="rulebox" class="content_box">
-        <h1>Rules for Wordle</h1>
-        <p>
-            The player has 6 tries to guess a 5 letter word. Guesses must be valid 5 letter words (you will need to check this). For each letter in the guess, you must report one of three results:
-            <ul>
-                <li>if the letter is not in the answer</li>
-                <li>if the in the answer but in a different place than in your guess word</li>
-                <li>if the letter is in the same place as in the guess word</li>
-            </ul>
-            The game ends when the user guesses the word or uses all 6 guesses.
-        </p>
         <p>
             Required Features:
             <ul>
@@ -284,9 +271,9 @@
         <pre id="debug_text">
 
          ∧,,,∧
-　      ( ・ω・） It sure is a mystery.
-　　    ( つ旦O
-　　    と＿)_)
+        ( ・ω・） It sure is a mystery.
+        ( つ旦O
+        と＿)_)
         </pre>
     </div>
 
