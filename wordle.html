@@ -40,13 +40,13 @@
             height: 30px;
             width: 30px;
             border-style: solid;
-            border-color: black;
+            border-color: white;
             font-family: Arial, Helvetica, sans-serif;
             color: black;
             text-align: center;
             font-size: 20px;
             display: inline-block;
-            background-color: aliceblue;
+            background-color: rgb(193, 225, 253);
         }
 
         .index_correct {
@@ -301,6 +301,13 @@
                 // erase whatever's in the result_box <div> and debug_text <div>
                 document.getElementById("result_box").innerHTML = "";
                 document.getElementById("debug_text").innerHTML = " ∧,,,∧<br>( ・ω・） It sure is a mystery.<br>( つ旦O<br>と＿)_)";
+
+                // turn all the keyboard <div>s white again
+                // iterate through keyboard array
+                    for (letter in keyboard) {
+                    letter_id = keyboard[letter].toLowerCase();
+                    document.getElementById(letter_id).setAttribute("class", "key");
+                }
                 
                 // set turn_counter variable back to 0 and clear target array
                 turn_counter = 0;
