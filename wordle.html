@@ -250,7 +250,10 @@
                     // otherwise, if the letter is contained within target_word.listform somewhere, add the class "content_correct"
                     else if (target.includes(character)) {
                         letter_box.classList.add("content_correct");
-                        document.getElementById(character).setAttribute("class", "content_correct");
+                        // make sure the corresponding keyboard <div> hasn't already been marked green already
+                        if (!document.getElementById(character).classList.contains("index_correct")) {
+                            document.getElementById(character).setAttribute("class", "content_correct");
+                        }
                     }
                     // otherwise, add the class "totally_wrong"
                     else {
