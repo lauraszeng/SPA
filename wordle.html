@@ -36,17 +36,56 @@
             display: inline-block;
         }
 
+        .key {
+            height: 30px;
+            width: 30px;
+            border-style: solid;
+            border-color: black;
+            font-family: Arial, Helvetica, sans-serif;
+            color: black;
+            text-align: center;
+            font-size: 20px;
+            display: inline-block;
+            background-color: aliceblue;
+        }
+
         .index_correct {
+            height: 30px;
+            width: 30px;
+            border-style: solid;
+            border-color: aliceblue;
+            font-family: Arial, Helvetica, sans-serif;
+            color: aliceblue;
+            text-align: center;
+            font-size: 20px;
+            display: inline-block;
             background-color:limegreen;
         }
 
         .content_correct {
+            height: 30px;
+            width: 30px;
+            border-style: solid;
+            border-color: aliceblue;
+            font-family: Arial, Helvetica, sans-serif;
+            color: aliceblue;
+            text-align: center;
+            font-size: 20px;
+            display: inline-block;
             background-color: goldenrod;
         }
 
         .totally_wrong {
+            height: 30px;
+            width: 30px;
+            border-style: solid;
+            border-color: aliceblue;
+            font-family: Arial, Helvetica, sans-serif;
+            color: aliceblue;
+            text-align: center;
+            font-size: 20px;
+            display: inline-block;
             background-color: rgb(115, 118, 118);
-            color:white;
         }
     </style>
     <script>
@@ -60,6 +99,24 @@
 
         // create variable "turn_counter" that counts up from zero every time the submit button gets pressed
         var turn_counter = 0;
+
+        // create array "keyboard" that's just a list of the alphabet in uppercase
+        var keyboard = ["A", "B", "C", "D", "E", "F", "G", "H", "I", "J", "K", "L", "M", "N", "O", "P", "Q", "R", "S", "T", "U", "V", "W", "X", "Y", "Z"]
+        
+        // create keyboard display 
+        // iterate through keyboard array
+        function keyboard_maker() {
+            for (letter in keyboard) {
+                // create variable "key" that will append a <div> to the keyboard <div>
+                capital_letter = keyboard[letter]
+                key = document.createElement("div");
+                key.textContent = capital_letter;
+                key.setAttribute("class", "key");
+                key.setAttribute("id", capital_letter.toLowerCase())
+                // append to keyboard <div>
+                document.getElementById("keyboard").appendChild(key);
+            }
+        }
 
         // using Random Word API ("https://random-word-api.herokuapp.com/home"), get a random five letter word and turn it into an array
         function word_finder() {
@@ -84,20 +141,27 @@
 
         // using Dictionary API (https://dictionaryapi.dev), check whether a word is in the dictionary
         async function dictionary(word_input) {
+            word_status = 0
             // make instance of request object
-            response = fetch("https://api.dictionaryapi.dev/api/v2/entries/en/" + word_input)
+            response = await fetch("https://api.dictionaryapi.dev/api/v2/entries/en/" + word_input)
+            .then(response => {
+                if(!response.ok) {
+                    word_status = false
+                    console.log(word_status)
+                }
+                else {
+                    word_status = true;
+                    console.log(word_status)
+                }
+            })
+            .catch(error => console.log(error))
 
-            if (!response.ok) {
-                console.log("aiya")
+            if (word_status == false) {
+                return false;
             }
-            // .then (response => response.text())
-            // .then (data => {
-            //     //console.log(JSON.parse(data))
-            // })
-            // .catch (error => {
-            //     //console.log(error)
-            //     console.log("aiya")
-            // })
+            else {
+                return true;
+            }
         }
 
         // create a function that shows the target word in the debug_box
@@ -135,8 +199,6 @@
                 // get the input from input box, turn it into a string, then divvy up all the letters of the string into an array
                 var word_input = document.getElementById("word_input").value.toString().split("");
 
-                console.log("mark1", target)
-
                 // now validate the input!
                 // make sure that word_input is 5 letters long
                 if (word_input.length != 5) {
@@ -147,7 +209,6 @@
                 word_input.forEach((letter, index, array) => {
                     array[index] = letter.toLowerCase();
                 })
-
                 // also make sure it's an actual letter, by using the letter_checker() function
                 var is_letter = letter_checker(word_input)
 
@@ -155,6 +216,15 @@
                     alert("PLEASE use actual letters...");
                     return false;
                 }
+                // also make sure it's an actual word that's in the dictionary
+                // turn word_input back into a word
+                // dictionary_input = word_input.join("")
+                // dictionary_result = dictionary(dictionary_input)
+                // console.log(dictionary_result)
+                // if (dictionary_result == false) {
+                //     console.log("not a word")
+                //     return false;
+                // }
 
                 // create variable "correct_ticker" that counts up from zero every time a letter in word_input matches with target_word.listform
                 var correct_ticker = 0;
@@ -169,20 +239,23 @@
                     letter_box.textContent = character;
                     letter_box.setAttribute("class", "letter_box");
                     
-                    // now determine the letter <div>'s background 
+                    // now determine the letter <div>'s background and adjust the corresponding keyboard <div> accordingly
                     // if the letter matches index to index with target_word.listform, add the class "position_correct" to "letterbox"
                     if (character == target[letter]) {
                         letter_box.classList.add("index_correct");
+                        document.getElementById(character).setAttribute("class", "index_correct");
                         // also add 1 to correct_ticker
                         correct_ticker++
                     }
                     // otherwise, if the letter is contained within target_word.listform somewhere, add the class "content_correct"
                     else if (target.includes(character)) {
                         letter_box.classList.add("content_correct");
+                        document.getElementById(character).setAttribute("class", "content_correct");
                     }
                     // otherwise, add the class "totally_wrong"
                     else {
                         letter_box.classList.add("totally_wrong");
+                        document.getElementById(character).setAttribute("class", "totally_wrong");
                     }
                     
                     // stick the <div> onto result_box
@@ -238,35 +311,17 @@
 
         // as soon as the page loads, run a couple of functions
         document.addEventListener("DOMContentLoaded", function() {
-            // word_finder();
+            keyboard_maker();
             word_validation();
             debug();
             replay();
-            //dictionary("hello");
-            dictionary("hgeklrahj");
         })
 
     </script>
 </head>
 
 <body>
-    <div id="rulebox" class="content_box">
-        <p>
-            Required Features:
-            <ul>
-                <li>Display a used letter indicator so that the user can avoid letters that are eliminated.</li>
-                <li>Include an optional “debug” mode (switchable at the start of the game) that displays the answer so that it is easier to check correct operation. </li>
-                <li>Allow the user to play multiple games. </li>
-                <li>Responsive to tablet size (down to 700px) </li>
-            </ul>
-            Optional Features:
-            <ul>
-                <li>statistics of wins and losses- and how many guesses a win needed.</li>
-                <li>Some animation when the user wins.</li>
-                <li>Responsive to 600px wide</li>
-            </ul>
-        </p>
-        </p>
+    <div id="keyboard" class="content_box">
     </div>
     <div id="debug_box" class="content_box">
         <h1>Target Word</h1>
