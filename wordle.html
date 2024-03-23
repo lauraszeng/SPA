@@ -219,7 +219,8 @@
                 // turn word_input back into a word
                 dictionary_input = word_input.join("")
                 dictionary_result = dictionary(dictionary_input)
-                console.log(dictionary_result)
+                // this doesn't work and i'm not sure why
+                // in any case, the idea here was to run dictionary_result through the dictionary function, then break out of the word_validation function with return if the dictionary function returned false
                 if (dictionary_result == false) {
                     console.log("not a word")
                     return false;
