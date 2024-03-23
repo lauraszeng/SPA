@@ -8,7 +8,6 @@
 
     <style>
         .content_box {
-            border-style: solid;
             margin-left: 20px;
             margin-right: 20px;
             margin-top: 5px;
@@ -218,13 +217,13 @@
                 }
                 // also make sure it's an actual word that's in the dictionary
                 // turn word_input back into a word
-                // dictionary_input = word_input.join("")
-                // dictionary_result = dictionary(dictionary_input)
-                // console.log(dictionary_result)
-                // if (dictionary_result == false) {
-                //     console.log("not a word")
-                //     return false;
-                // }
+                dictionary_input = word_input.join("")
+                dictionary_result = dictionary(dictionary_input)
+                console.log(dictionary_result)
+                if (dictionary_result == false) {
+                    console.log("not a word")
+                    return false;
+                }
 
                 // create variable "correct_ticker" that counts up from zero every time a letter in word_input matches with target_word.listform
                 var correct_ticker = 0;
